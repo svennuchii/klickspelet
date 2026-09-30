@@ -1,0 +1,274 @@
+```html
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Klickspelet</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .game {
+            width: 600px;
+            margin: 50px auto;
+            background-color: #333;
+            padding: 30px;
+            border-radius: 20px;
+        }
+
+        h1 {
+            font-size: 40px;
+        }
+
+        #score {
+            font-size: 30px;
+            margin: 20px;
+        }
+
+        #timer {
+            font-size: 30px;
+            margin: 20px;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 18px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        #clickButton {
+            width: 250px;
+            height: 150px;
+            font-size: 35px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        #clickButton:hover {
+            background-color: #ccc;
+        }
+
+        #startButton {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        #message {
+            font-size: 22px;
+            margin-top: 20px;
+        }
+
+        .history {
+            margin-top: 30px;
+            background-color: #444;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .history h2 {
+            margin-top: 0;
+        }
+
+        #attempts {
+            list-style-position: inside;
+            padding: 0;
+            font-size: 18px;
+        }
+
+        #attempts li {
+            margin: 10px 0;
+        }
+
+        #clearButton {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="game">
+
+        <h1>🎮 Klickspelet</h1>
+
+        <p>Välj hur länge du vill spela:</p>
+
+        <select id="timeChoice">
+            <option value="10">10 sekunder</option>
+            <option value="20">20 sekunder</option>
+            <option value="30">30 sekunder</option>
+        </select>
+
+        <p id="score">Poäng: 0</p>
+
+        <p id="timer">Tid: 10</p>
+
+        <button id="clickButton" onclick="clickGame()">
+            KLICKA!
+        </button>
+
+        <br>
+
+        <button id="startButton" onclick="startGame()">
+            Starta spelet
+        </button>
+
+        <p id="message"></p>
+
+
+        <div class="history">
+
+            <h2>Mina försök</h2>
+
+            <ol id="attempts"></ol>
+
+            <button id="clearButton" onclick="clearAttempts()">
+                Rensa försök
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        let score = 0;
+        let time = 10;
+        let gameStarted = false;
+        let timer;
+
+
+        function startGame() {
+
+            // Om ett gammalt spel fortfarande körs stoppas det
+            clearInterval(timer);
+
+            // Hämtar tiden som spelaren valt
+            time = Number(document.getElementById("timeChoice").value);
+
+            // Nollställer poängen
+            score = 0;
+
+            // Spelet är igång
+            gameStarted = true;
+
+            // Visar poängen
+            document.getElementById("score").innerText =
+                "Poäng: 0";
+
+            // Visar den valda tiden
+            document.getElementById("timer").innerText =
+                "Tid: " + time;
+
+            // Tar bort gammalt meddelande
+            document.getElementById("message").innerText = "";
+
+            // Startar klockan
+            timer = setInterval(countDown, 1000);
+        }
+
+
+        function clickGame() {
+
+            // Man kan bara få poäng när spelet är igång
+            if (gameStarted === true) {
+
+                score = score + 1;
+
+                document.getElementById("score").innerText =
+                    "Poäng: " + score;
+            }
+        }
+
+
+        function countDown() {
+
+            time = time - 1;
+
+            // Visar tiden
+            document.getElementById("timer").innerText =
+                "Tid: " + time;
+
+
+            // När tiden når 0
+            if (time <= 0) {
+
+                // Stoppar klockan
+                clearInterval(timer);
+
+                // Ser till att tiden verkligen är exakt 0
+                time = 0;
+
+                document.getElementById("timer").innerText =
+                    "Tid: 0";
+
+                // Stoppar spelet
+                gameStarted = false;
+
+                // Visar resultatet
+                document.getElementById("message").innerText =
+                    "Tiden är slut! Du fick " + score + " poäng!";
+
+                // Sparar försöket
+                saveAttempt();
+            }
+        }
+
+
+        function saveAttempt() {
+
+            // Hämtar den valda tiden
+            let selectedTime =
+                document.getElementById("timeChoice").value;
+
+            // Skapar ett nytt försök
+            let newAttempt =
+                selectedTime + " sekunder - " +
+                score + " poäng";
+
+            // Skapar en ny rad i listan
+            let listItem = document.createElement("li");
+
+            // Skriver resultatet
+            listItem.innerText = newAttempt;
+
+            // Lägger resultatet längst ner i listan
+            document.getElementById("attempts").appendChild(listItem);
+        }
+
+
+        function clearAttempts() {
+
+            // Tar bort alla tidigare försök
+            document.getElementById("attempts").innerHTML = "";
+
+            // Tar bort meddelandet
+            document.getElementById("message").innerText = "";
+        }
+
+    </script>
+
+</body>
+</html>
+```
